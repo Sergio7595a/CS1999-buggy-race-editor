@@ -8,6 +8,33 @@ app = Flask(__name__)
 DATABASE_FILE = "database.db"
 DEFAULT_BUGGY_ID = "1"
 BUGGY_RACE_SERVER_URL = "http://rhul.buggyrace.net"
+#------------------------------------------------------------
+# validation
+#------------------------------------------------------------
+def forum_check(data,type):
+    if type == 1:
+        if not data.isdigit():
+            return data , 1
+    return data , 0
+
+def database_assign(item,type,msg):
+     data,error = forum_check(request.form[item],type)
+     try:
+         with sql.connect(DATABASE_FILE) as con:
+             cur = con.cursor()
+             cur.execute(
+                 f"UPDATE buggies set {item}=? WHERE id=?",
+                 (data, DEFAULT_BUGGY_ID)
+             )
+             con.commit()
+             # msg = "Record successfully saved"
+             msg += f"{item}={data}, "
+     except:
+         con.rollback()
+         msg = "error in update for" + item
+     finally:
+         con.close()
+         return msg
 
 #------------------------------------------------------------
 # the index page
@@ -27,23 +54,10 @@ def create_buggy():
         return render_template("buggy-form.html")
     elif request.method == 'POST':
         msg=""
-        qty_wheels = request.form['qty_wheels']
-        flag_color = request.form['flag_color']
-        try:
-            with sql.connect(DATABASE_FILE) as con:
-                cur = con.cursor()
-                cur.execute(
-                    "UPDATE buggies set qty_wheels=?, flag_color=? WHERE id=?",
-                    (qty_wheels, flag_color, DEFAULT_BUGGY_ID)
-                )
-                con.commit()
-                # msg = "Record successfully saved"
-                msg = f"qty_wheels={qty_wheels} flag_color={flag_color}"
-        except:
-            con.rollback()
-            msg = "error in update operation"
-        finally:
-            con.close()
+
+        msg = database_assign('qty_wheels',1,msg)
+        msg = database_assign('flag_color',0,msg)
+
         return render_template("updated.html", msg = msg)
 
 #------------------------------------------------------------
