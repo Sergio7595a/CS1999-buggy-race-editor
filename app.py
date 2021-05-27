@@ -7,35 +7,45 @@ app = Flask(__name__)
 # Constants - Stuff that we need to know that won't ever change!
 DATABASE_FILE = "database.db"
 DEFAULT_BUGGY_ID = "1"
-BUGGY_RACE_SERVER_URL = "http://rhul.buggyrace.net"
+BUGGY_RACE_SERVER_URL = "https://rhul.buggyrace.net"
 #------------------------------------------------------------
 # validation
 #------------------------------------------------------------
 def forum_check(data,type):
     if type == 1:
         if not data.isdigit():
-            return data , 1
+            return  "needs a digit not a word/letters, " , 1
     return data , 0
 
 def database_assign(item,type,msg):
      data,error = forum_check(request.form[item],type)
-     try:
-         with sql.connect(DATABASE_FILE) as con:
-             cur = con.cursor()
-             cur.execute(
-                 f"UPDATE buggies set {item}=? WHERE id=?",
-                 (data, DEFAULT_BUGGY_ID)
-             )
-             con.commit()
-             # msg = "Record successfully saved"
-             msg += f"{item}={data}, "
-     except:
-         con.rollback()
-         msg = "error in update for" + item
-     finally:
-         con.close()
+     if error == 1:
+         msg = item +" "+ data
          return msg
-
+     else:
+         try:
+             with sql.connect(DATABASE_FILE) as con:
+                 cur = con.cursor()
+                 cur.execute(
+                     f"UPDATE buggies set {item}=? WHERE id=?",
+                     (data, DEFAULT_BUGGY_ID)
+                 )
+                 con.commit()
+                 # msg = "Record successfully saved"
+                 msg += f"value of {item} is now {data}, "
+         except:
+             con.rollback()
+             msg = "error in update for" + item
+         finally:
+             con.close()
+             return msg
+def get_table():
+    con = sql.connect(DATABASE_FILE)
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("SELECT * FROM buggies")
+    record = cur.fetchone();
+    return record
 #------------------------------------------------------------
 # the index page
 #------------------------------------------------------------
@@ -51,7 +61,7 @@ def home():
 @app.route('/new', methods = ['POST', 'GET'])
 def create_buggy():
     if request.method == 'GET':
-        return render_template("buggy-form.html")
+        return render_template("buggy-form.html", buggy = get_table())
     elif request.method == 'POST':
         msg=""
 
@@ -65,12 +75,7 @@ def create_buggy():
 #------------------------------------------------------------
 @app.route('/buggy')
 def show_buggies():
-    con = sql.connect(DATABASE_FILE)
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    cur.execute("SELECT * FROM buggies")
-    record = cur.fetchone(); 
-    return render_template("buggy.html", buggy = record)
+    return render_template("buggy.html", buggy = get_table())
 
 #------------------------------------------------------------
 # a placeholder page for editing the buggy: you'll need

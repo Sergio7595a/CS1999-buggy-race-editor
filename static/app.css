@@ -8,6 +8,7 @@ body {
   padding: 0;
   font-size: 1.2em;
   color: #000000;
+
   background: repeating-linear-gradient(
     45deg,
     #ffffee,
@@ -19,7 +20,7 @@ body {
 .main-content {
   min-height: 100vh;
   padding: 1em;
-  background: #ffffff;
+  background: #3BB9EB;
   margin: 0 0 0 3em;
 }
 h1 {
@@ -60,5 +61,6 @@ table td, table th {
   padding: 0.5rem;
 }
 .spacer {
+  background-color: #3BB9EB;
   margin: 3em 0;
 }
