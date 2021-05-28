@@ -2,24 +2,49 @@
 
 {% block content %}
 
-  <h1>Construct the SERBuggy</h1>
-
-
+  <h1>Construct the SERBuggy Warfare modules</h1>
 
   <form action="/new" method="post">
     <p>
-      <label for="qty_wheels">Number of wheels: </label>
-      <input type="text" name="qty_wheels" value="{{ buggy['qty_wheels'] }}" />
+      <label for="armour">Armour type: </label>
+      <input type="text" name="armour" value="{{ buggy['armour'] }}" />
+    </p>
+    <p>
+      <label for="attack">Weapon type: </label>
+      <input type="text" name="attack" value="{{ buggy['attack'] }}" />
+    </p>
+    <p>
+      <label for="qty_attacks">Number of attacks: </label>
+      <input type="text" name="qty_attacks" value="{{ buggy['qty_attacks'] }}" />
+    </p>
+    <p>
+      <label for="fireproof">Is it fireproof?: </label>
+      <input type="text" name="fireproof" value="{{ buggy['fireproof'] }}" />
+    </p>
+    <p>
+      <label for="insulated">Is it insulated?: </label>
+      <input type="text" name="insulated" value="{{ buggy['insulated'] }}" />
+    </p>
+    <p>
+      <label for="antibiotic">Is it antibiotic?: </label>
+      <input type="text" name="antibiotic" value="{{ buggy['antibiotic'] }}" />
+    </p>
+    <p>
+      <label for="banging">Is it banging tunes?: </label>
+      <input type="text" name="banging" value="{{ buggy['banging'] }}" />
+    </p>
+    <p>
+      <label for="algo">Algorithm type: </label>
+      <input type="text" name="algo" value="{{ buggy['algo'] }}" />
     </p>
 
-    <label for="flag_color">Colour of flag:</label>
-    <input type="text" name="flag_color" value="{{ buggy['flag_color'] }}" />
+
     <input type="submit" class="button">
 
   </form>
 
   <p>
-    <a href="/" class="button">home</a>
+    <a href="/edit" class="button">back</a>
   </p>
 
 {% endblock %}

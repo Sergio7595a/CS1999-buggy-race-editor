@@ -11,15 +11,20 @@
       <label for="qty_wheels">Number of wheels: </label>
       <input type="text" name="qty_wheels" value="{{ buggy['qty_wheels'] }}" />
     </p>
-
-    <label for="flag_color">Colour of flag:</label>
-    <input type="text" name="flag_color" value="{{ buggy['flag_color'] }}" />
+    <p>
+      <label for="tyres">Tyre type: </label>
+      <input type="text" name="tyres" value="{{ buggy['tyres'] }}" />
+    </p>
+    <p>
+      <label for="qty_tyres">Number of Tyres: </label>
+      <input type="text" name="qty_tyres" value="{{ buggy['qty_tyres'] }}" />
+    </p>
     <input type="submit" class="button">
 
   </form>
 
   <p>
-    <a href="/" class="button">home</a>
+    <a href="/edit" class="button">back</a>
   </p>
 
 {% endblock %}

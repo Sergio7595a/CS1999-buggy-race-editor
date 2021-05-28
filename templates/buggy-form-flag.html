@@ -8,18 +8,24 @@
 
   <form action="/new" method="post">
     <p>
-      <label for="qty_wheels">Number of wheels: </label>
-      <input type="text" name="qty_wheels" value="{{ buggy['qty_wheels'] }}" />
+      <label for="flag_color">Colour of flag:</label>
+      <input type="text" name="flag_color" value="{{ buggy['flag_color'] }}" />
+    </p>
+    <p>
+      <label for="flag_pattern">Pattern of the flag:</label>
+      <input type="text" name="flag_pattern" value="{{ buggy['flag_pattern'] }}" />
+    </p>
+    <p>
+      <label for="flag_color_secondary">Second colour of flag:</label>
+      <input type="text" name="flag_color_secondary" value="{{ buggy['flag_color_secondary'] }}" />
     </p>
 
-    <label for="flag_color">Colour of flag:</label>
-    <input type="text" name="flag_color" value="{{ buggy['flag_color'] }}" />
     <input type="submit" class="button">
 
   </form>
 
   <p>
-    <a href="/" class="button">home</a>
+    <a href="/edit" class="button">back</a>
   </p>
 
 {% endblock %}

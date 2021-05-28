@@ -3,20 +3,18 @@
 {% block content %}
 
   <h1>Construct the SERBuggy</h1>
-
-
-
-  <form action="/new" method="post">
-    <p>
-      <label for="qty_wheels">Number of wheels: </label>
-      <input type="text" name="qty_wheels" value="{{ buggy['qty_wheels'] }}" />
-    </p>
-
-    <label for="flag_color">Colour of flag:</label>
-    <input type="text" name="flag_color" value="{{ buggy['flag_color'] }}" />
-    <input type="submit" class="button">
-
-  </form>
+  <p>
+    <a href="/warfare" class="button">Adjust Warfare modules</a>
+  </p>
+  <p>
+    <a href="/wheel" class="button">Adjust Wheel modules</a>
+  </p>
+  <p>
+    <a href="/power" class="button">Adjust Power modules</a>
+  </p>
+  <p>
+    <a href="/flag" class="button">Adjust flag</a>
+  </p>
 
   <p>
     <a href="/" class="button">home</a>

@@ -81,10 +81,28 @@ def show_buggies():
 # a placeholder page for editing the buggy: you'll need
 # to change this when you tackle task 2-EDIT
 #------------------------------------------------------------
-@app.route('/edit')
-def edit_buggy():
-    return render_template("buggy-form.html")
+def edit_buggy(module):
+    return render_template(module,buggy=get_table() )
 
+@app.route('/edit')
+def show_option():
+    return edit_buggy("buggy-form.html")
+
+@app.route('/warfare')
+def warfare_edit():
+    return edit_buggy("buggy-form-warfare.html")
+
+@app.route('/wheel')
+def wheel_edit():
+    return edit_buggy("buggy-form-wheel.html")
+
+@app.route('/power')
+def power_edit():
+    return edit_buggy("buggy-form-power.html")
+
+@app.route('/flag')
+def flag_edit():
+    return edit_buggy("buggy-form-flag.html")
 #------------------------------------------------------------
 # You probably don't need to edit this... unless you want to ;)
 #

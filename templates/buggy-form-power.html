@@ -8,18 +8,32 @@
 
   <form action="/new" method="post">
     <p>
-      <label for="qty_wheels">Number of wheels: </label>
-      <input type="text" name="qty_wheels" value="{{ buggy['qty_wheels'] }}" />
+      <label for="power_type">Type of primary power: </label>
+      <input type="text" name="power_type" value="{{ buggy['power_type'] }}" />
+    </p>
+    <p>
+      <label for="power_units">amount of primary fuel :</label>
+      <input type="text" name="power_units" value="{{ buggy['power_units'] }}" />
+    </p>
+    <p>
+      <label for="aux_power_type">Type of auxiliary power:</label>
+      <input type="text" name="aux_power_type" value="{{ buggy['aux_power_type'] }}" />
+    </p>
+    <p>
+      <label for="aux_power_units">amount of auxiliary fuel:</label>
+      <input type="text" name="aux_power_units" value="{{ buggy['aux_power_units'] }}" />
+    </p>
+    <p>
+      <label for="hamster_booster">Hamster strong hamster good:</label>
+      <input type="text" name="hamster_booster" value="{{ buggy['hamster_booster'] }}" />
     </p>
 
-    <label for="flag_color">Colour of flag:</label>
-    <input type="text" name="flag_color" value="{{ buggy['flag_color'] }}" />
     <input type="submit" class="button">
 
   </form>
 
   <p>
-    <a href="/" class="button">home</a>
+    <a href="/edit" class="button">back</a>
   </p>
 
 {% endblock %}
