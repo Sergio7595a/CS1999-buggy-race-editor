@@ -105,11 +105,11 @@ def wheel_edit():
     elif request.method == 'POST':
         msg=""
         # wheels
-        msg = database_assign('qty_wheels', 1, msg)
-        msg = database_assign('tyres', 0, msg)
-        msg = database_assign('qty_tyres', 1, msg)
+        qty_wheels = database_assign('qty_wheels', 1)
+        tyres = database_assign('tyres', 0)
+        qty_tyres = database_assign('qty_tyres', 1)
 
-        return render_template("updated.html", msg = msg)
+        return render_template("updated.html", msg=qty_wheels, msg2=tyres, msg3=qty_tyres)
 @app.route('/power', methods = ['POST', 'GET'])
 def power_edit():
     if request.method == 'GET':
@@ -117,13 +117,13 @@ def power_edit():
     elif request.method == 'POST':
         msg=""
         # power
-        msg = database_assign('power_type', 0, msg)
-        msg = database_assign('power_units', 1, msg)
-        msg = database_assign('aux_power_type', 0, msg)
-        msg = database_assign('aux_power_units', 1, msg)
-        msg = database_assign('hamster_booster', 1, msg)
+        power_type = database_assign('power_type', 0)
+        power_units = database_assign('power_units', 1)
+        aux_power_type = database_assign('aux_power_type', 0)
+        aux_power_units = database_assign('aux_power_units', 1)
+        hamster_booster = database_assign('hamster_booster', 1)
 
-        return render_template("updated.html", msg = msg)
+        return render_template("updated.html", msg=power_type, msg2=power_units, msg3=aux_power_type, msg4=aux_power_units, msg5=hamster_booster)
 
 @app.route('/flag', methods = ['POST', 'GET'])
 def flag_edit():
@@ -132,11 +132,11 @@ def flag_edit():
     elif request.method == 'POST':
         msg=""
         # flag
-        msg = database_assign('flag_color', 0, msg)
-        msg = database_assign('flag_pattern', 0, msg)
-        msg = database_assign('flag_color_secondary', 0, msg)
+        flag_color = database_assign('flag_color', 0)
+        flag_pattern = database_assign('flag_pattern', 0)
+        flag_color_secondary = database_assign('flag_color_secondary', 0)
 
-        return render_template("updated.html", msg = msg)
+        return render_template("updated.html", msg=flag_color, msg2=flag_pattern, msg3=flag_color_secondary)
 
 #------------------------------------------------------------
 # You probably don't need to edit this... unless you want to ;)

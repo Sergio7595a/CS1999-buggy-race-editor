@@ -17,5 +17,8 @@ item = []
 #print(table)
 for row in table.findAll("tr"):
     for cell in row("td"):
-        cell.get_text().strip()
-        print(cell.get_text().strip())
+        item.append(cell.get_text().strip())
+print(item)
+for num in range(len(item)):
+    if num % 5 == 0:
+        print(item[num])
