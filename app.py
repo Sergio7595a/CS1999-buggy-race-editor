@@ -17,7 +17,7 @@ def forum_check(data,type):
             return  "needs a digit not a word/letters, " , 1
     return data , 0
 
-def database_assign(item,type,msg):
+def database_assign(item,type):
      data,error = forum_check(request.form[item],type)
      if error == 1:
          msg = item +" "+ data
@@ -32,7 +32,7 @@ def database_assign(item,type,msg):
                  )
                  con.commit()
                  # msg = "Record successfully saved"
-                 msg += f"value of {item} is now {data}, "
+                 msg = f"value of {item} is now {data}"
          except:
              con.rollback()
              msg = "error in update for" + item
@@ -58,17 +58,9 @@ def home():
 #  if it's a POST request process the submitted data
 #  but if it's a GET request, just show the form
 #------------------------------------------------------------
-@app.route('/new', methods = ['POST', 'GET'])
-def create_buggy():
-    if request.method == 'GET':
-        return render_template("buggy-form.html", buggy = get_table())
-    elif request.method == 'POST':
-        msg=""
-
-        msg = database_assign('qty_wheels',1,msg)
-        msg = database_assign('flag_color',0,msg)
-
-        return render_template("updated.html", msg = msg)
+#@app.route('/new', methods = ['POST', 'GET'])
+#def create_buggy():
+    #return render_template("buggy-form.html", buggy = get_table())
 
 #------------------------------------------------------------
 # a page for displaying the buggy
@@ -88,21 +80,64 @@ def edit_buggy(module):
 def show_option():
     return edit_buggy("buggy-form.html")
 
-@app.route('/warfare')
+@app.route('/warfare', methods = ['POST', 'GET'])
 def warfare_edit():
-    return edit_buggy("buggy-form-warfare.html")
+    if request.method == 'GET':
+        return edit_buggy("buggy-form-warfare.html")
+    elif request.method == 'POST':
+        msg=""
+        # warfare
+        armour = database_assign('armour', 0)
+        attack = database_assign('attack', 0)
+        qty_attacks = database_assign('qty_attacks', 1)
+        fireproof = database_assign('fireproof', 0)
+        insulated = database_assign('insulated', 0)
+        antibiotic = database_assign('antibiotic', 0)
+        banging = database_assign('banging', 0)
+        algo = database_assign('algo', 0)
 
-@app.route('/wheel')
+        return render_template("updated.html", msg=armour, msg2=attack, msg3=qty_attacks, msg4=fireproof, msg5=insulated, msg6=antibiotic, msg7=banging, msg8=algo)
+
+@app.route('/wheel', methods = ['POST', 'GET'])
 def wheel_edit():
-    return edit_buggy("buggy-form-wheel.html")
+    if request.method == 'GET':
+        return edit_buggy("buggy-form-wheel.html")
+    elif request.method == 'POST':
+        msg=""
+        # wheels
+        msg = database_assign('qty_wheels', 1, msg)
+        msg = database_assign('tyres', 0, msg)
+        msg = database_assign('qty_tyres', 1, msg)
 
-@app.route('/power')
+        return render_template("updated.html", msg = msg)
+@app.route('/power', methods = ['POST', 'GET'])
 def power_edit():
-    return edit_buggy("buggy-form-power.html")
+    if request.method == 'GET':
+        return edit_buggy("buggy-form-power.html")
+    elif request.method == 'POST':
+        msg=""
+        # power
+        msg = database_assign('power_type', 0, msg)
+        msg = database_assign('power_units', 1, msg)
+        msg = database_assign('aux_power_type', 0, msg)
+        msg = database_assign('aux_power_units', 1, msg)
+        msg = database_assign('hamster_booster', 1, msg)
 
-@app.route('/flag')
+        return render_template("updated.html", msg = msg)
+
+@app.route('/flag', methods = ['POST', 'GET'])
 def flag_edit():
-    return edit_buggy("buggy-form-flag.html")
+    if request.method == 'GET':
+        return edit_buggy("buggy-form-flag.html")
+    elif request.method == 'POST':
+        msg=""
+        # flag
+        msg = database_assign('flag_color', 0, msg)
+        msg = database_assign('flag_pattern', 0, msg)
+        msg = database_assign('flag_color_secondary', 0, msg)
+
+        return render_template("updated.html", msg = msg)
+
 #------------------------------------------------------------
 # You probably don't need to edit this... unless you want to ;)
 #
