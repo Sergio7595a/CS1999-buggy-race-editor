@@ -110,6 +110,7 @@ def wheel_edit():
         qty_tyres = database_assign('qty_tyres', 1)
 
         return render_template("updated.html", msg=qty_wheels, msg2=tyres, msg3=qty_tyres)
+
 @app.route('/power', methods = ['POST', 'GET'])
 def power_edit():
     if request.method == 'GET':

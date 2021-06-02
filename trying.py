@@ -12,13 +12,21 @@ soup = BeautifulSoup(html_page,"html.parser")
 #print(mess)
 
 table = soup.find( "table", {"class":"table table-striped table-bordered table-hover table-responsive"} )
-item = []
+items = []
 
 #print(table)
 for row in table.findAll("tr"):
     for cell in row("td"):
-        item.append(cell.get_text().strip())
-print(item)
-for num in range(len(item)):
-    if num % 5 == 0:
-        print(item[num])
+        items.append(cell.get_text().strip())
+print(items)
+count = 0
+
+def get_item(count,value):
+    print(items.__getitem__(count + 5))
+    if f'{items.__getitem__(count + 5)}':
+        print("yes")
+for item in range(10):
+    print(items[count])
+    integer = 6
+    get_item(count,integer)
+    count+= 5
