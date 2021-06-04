@@ -43,8 +43,8 @@ connection.execute("""
     insulated             BOOLEAN,
     antibiotic            BOOLEAN,
     banging               BOOLEAN,
-    algo                  VARCHAR(20) DEFAULT steady
-    
+    algo                  VARCHAR(20) DEFAULT steady,
+    total_cost            INTEGER DEFAULT 0
   )
 
 """)

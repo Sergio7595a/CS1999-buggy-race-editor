@@ -11,20 +11,31 @@ soup = BeautifulSoup(html_page,"html.parser")
 #mess = soup.get_text()
 #print(mess)
 
-table = soup.find( "table", {"class":"table table-striped table-bordered table-hover table-responsive"} )
-items = []
+def  assign_table(table):
+    item = []
+    for row in soup.find(table).findAll("tr"):
+        for cell in row("td"):
+            item.append(cell.get_text().strip())
+    return item
+items = assign_table("table", {"class":"table table-striped table-bordered table-hover table-responsive"})
+items2 = assign_table("table",{"class":"table table-striped table-bordered table-hover"})
 
-#print(table)
-for row in table.findAll("tr"):
-    for cell in row("td"):
-        items.append(cell.get_text().strip())
-print(items)
 count = 0
-costs = {}
+costs = []
+table = 0
+
+
 def get_costs(count):
-    print(items.__getitem__(count + 5))
+    if items.__getitem__(count + 2) == "—":
+        if table <= 0:
+            print("rawr")
+
+
 def list_costs():
     print("rawr")
-for item in range(10):
-    get_item(count)
-    count+= 5
+
+
+for item in range(19):
+    get_costs(count)
+    count += 6
+print(count)

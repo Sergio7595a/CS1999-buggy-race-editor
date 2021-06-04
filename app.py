@@ -11,12 +11,28 @@ BUGGY_RACE_SERVER_URL = "https://rhul.buggyrace.net"
 #------------------------------------------------------------
 # validation
 #------------------------------------------------------------
+def get_items():
+    con = sql.connect(DATABASE_FILE)
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("SELECT * FROM buggies WHERE id=? LIMIT 1", (DEFAULT_BUGGY_ID))
+
+    return dict(zip([column[0] for column in cur.description], cur.fetchone())).items()
+
 def forum_check(data,type):
     if type == 1:
         if not data.isdigit():
             return  "needs a digit not a word/letters, " , 1
     return data , 0
-
+def gather_costs():
+    print("fun")
+def calculate_cost():
+    to_check = get_items()
+    costs = gather_costs()
+    #print(to_check)
+    for item in to_check:
+        print(item)
+    return 20
 def database_assign(item,type):
      data,error = forum_check(request.form[item],type)
      if error == 1:
@@ -26,9 +42,10 @@ def database_assign(item,type):
          try:
              with sql.connect(DATABASE_FILE) as con:
                  cur = con.cursor()
+                 cost = calculate_cost()
                  cur.execute(
-                     f"UPDATE buggies set {item}=? WHERE id=?",
-                     (data, DEFAULT_BUGGY_ID)
+                     f"UPDATE buggies set {item}=?, total_cost=? WHERE id=?",
+                     (data, cost, DEFAULT_BUGGY_ID)
                  )
                  con.commit()
                  # msg = "Record successfully saved"
@@ -37,6 +54,7 @@ def database_assign(item,type):
              con.rollback()
              msg = "error in update for" + item
          finally:
+
              con.close()
              return msg
 def get_table():
@@ -148,14 +166,10 @@ def flag_edit():
 #  it. There's no .html template here because it's *only* returning
 #  the data, so in effect jsonify() is rendering the data.
 #------------------------------------------------------------
+
 @app.route('/json')
 def summary():
-    con = sql.connect(DATABASE_FILE)
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    cur.execute("SELECT * FROM buggies WHERE id=? LIMIT 1", (DEFAULT_BUGGY_ID))
-
-    buggies = dict(zip([column[0] for column in cur.description], cur.fetchone())).items() 
+    buggies = get_items()
     return jsonify({ key: val for key, val in buggies if (val != "" and val is not None) })
 
 # You shouldn't need to add anything below this!
