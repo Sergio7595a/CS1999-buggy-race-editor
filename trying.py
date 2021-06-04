@@ -20,13 +20,11 @@ for row in table.findAll("tr"):
         items.append(cell.get_text().strip())
 print(items)
 count = 0
-
-def get_item(count,value):
+costs = {}
+def get_costs(count):
     print(items.__getitem__(count + 5))
-    if f'{items.__getitem__(count + 5)}':
-        print("yes")
+def list_costs():
+    print("rawr")
 for item in range(10):
-    print(items[count])
-    integer = 6
-    get_item(count,integer)
+    get_item(count)
     count+= 5
