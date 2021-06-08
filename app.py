@@ -108,11 +108,22 @@ def show_buggies():
 def edit_buggy(module):
     return render_template(module, buggy=get_table())
 
+@app.route('/user_id', methods=['POST', 'GET'])
+def identity_edit():
+    if request.method == 'GET':
+        return edit_buggy("verify.html")
+    elif request.method == 'POST':
+        #id = database_assign()
+        return render_template("question.html")
 
 @app.route('/edit')
-def show_option():
+def edit_option():
     return edit_buggy("buggy-form.html")
 
+
+@app.route('/create')
+def create_option():
+    return edit_buggy("buggy-form.html")
 
 @app.route('/warfare', methods=['POST', 'GET'])
 def warfare_edit():

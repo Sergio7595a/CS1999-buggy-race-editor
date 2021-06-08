@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h1>Construct the SERBuggy</h1>
+
+
+
+  <form action="/user_id" method="post">
+    <p>
+      <label for="id">your current identification: </label>
+      <input type="text" name="id" value="{{ buggy['id'] }}" />
+    </p>
+    <p>
+      <input type="submit" class="button">
+    </p>
+  </form>
+
+  <p>
+    <a href="/edit" class="button">back</a>
+  </p>
+
+{% endblock %}
+
+
