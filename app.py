@@ -1,5 +1,3 @@
-from typing import List
-
 from flask import Flask, render_template, request, jsonify
 import sqlite3 as sql
 
@@ -91,6 +89,27 @@ def database_new(item,type,path):
         finally:
             con.close()
             return msg
+def database_remove(id):
+    data, error = forum_check(id, 1)
+    if error == 1:
+        msg = id + " " + data
+        return msg
+    else:
+        try:
+            with sql.connect(DATABASE_FILE) as con:
+                cur = con.cursor()
+                cur.execute(
+                    f"DELETE buggies ({id}) WHERE id=?",
+                    (data))
+                con.commit()
+                # msg = "Record successfully saved"
+                msg = f"buggy {data} is deleted"
+        except:
+            con.rollback()
+            msg = "error in new data for " + data
+        finally:
+            con.close()
+            return msg
 
 def get_table(type=0):
     con = sql.connect(DATABASE_FILE)
@@ -112,7 +131,9 @@ def get_table(type=0):
 def home():
     return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
 
-
+@app.route('/poster')
+def poster():
+   return render_template('poster.html')
 # ------------------------------------------------------------
 # creating a new buggy:
 #  if it's a POST request process the submitted data
@@ -165,6 +186,15 @@ def create_option():
         return render_template("updated.html", msg="new buggy has been created feel free to edit it")
     elif request.method == 'POST':
         return render_template("buggy-form.html", buggy=get_table(), id=current_id[0])
+
+@app.route('/delete', methods=['POST', 'GET'])
+def delete_option():
+    if request.method == 'GET':
+        return render_template("updated.html", msg="new buggy has been created feel free to edit it")
+    elif request.method == 'POST':
+        id = request.form['id']
+        msg = database_remove(id)
+        return render_template("updated.html", msg=msg)
 
 def decider(path,item,type):
     if path == 1:

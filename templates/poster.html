@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  .cs1999-tasks {
+    border-top: 1px solid black;
+    margin-top: 4em;
+  }
+  .cs1999-tasks .task {
+    margin: 1em;
+    padding: 1em;
+    border: 1px solid black;
+  }
+  .cs1999-tasks .task h2 {
+    border-bottom: 3px solid gray;
+  }
+</style>
+
+<!-- see tech note about the poster:
+      https://rhul-cs-projects.github.io/CS1999-buggy-race-server/                -->
+<!--                                                                              -->
+<!-- anything you want here: make it beautiful! make it appealing! make it clear! -->
+<!-- you can drop images into static/assets if you want... and access them        -->
+<!-- here with <img src="/static/image-filename.png" alt="diagram" />             -->
+<!--                                                                              -->
+<!-- Of course you can edit static/app.css too if you want. It's your webserver,  -->
+<!--                                                                              -->
+<!-- Maybe... delete all these comments too :-)                                   -->
+
+
+<!-- below this point keep this section tag and paste in a <div> for every        -->
+<!-- task you attempted.                                                          -->
+
+<section class="cs1999-tasks">
+  <h1>how i constructed the SERBuggy editor</h1>
+  <div class="task">
+    <h2>0-GET</h2>
+    <p>
+      I forked the repo on GitHub Desktop
+    </p>
+    <p>
+      Once the repo was on my own machine,
+      i was able to edit it and proceed to make more changes without worry,
+      because i could revert the changes. after each session i did a push.
+      Each time i pulled the data to the uni's systems and doing the same there.
+    </p>
+  </div>
+  <p>
+    <a href="/" class="button">home</a>
+  </p>
+
+<!-- this closes the section: keep it in! -->
+</section>
+
+{% endblock %}
+
+
+

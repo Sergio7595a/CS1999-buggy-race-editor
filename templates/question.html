@@ -5,7 +5,7 @@
   <h1>what do you wish to do with the SERBuggy creator {{ id }}</h1>
 
   <form action="/edit" method="post">
-    <label for="id"value={{id}}>which buggy to adjust: </label>
+    <label for="id"value={{id}}>which buggy to edit: </label>
     <select name="id" id="identity">
       {%for buggy in buggies%}
       <option value="{{ buggy['id'] }}">{{ buggy['id'] }}</option>
@@ -15,8 +15,16 @@
     <input type="submit" class="button">
   </form>
   <p>
-    <a href="/create" class="button" method="post">create a new buggy.</a>
+    <a href="/create" class="button">create a new buggy.</a>
   </p>
+  <form action="/delete" method="post">
+    <label for="id"value={{id}}>which buggy to delete: </label>
+      <select name="id" id="fun">
+        {%for buggy in buggies%}
+          <option value="{{ buggy['id'] }}">{{ buggy['id'] }}</option>
+        {% endfor %}
+      </select>
+  </form>>
   <p>
     <a href="/" class="button">home</a>
   </p>
