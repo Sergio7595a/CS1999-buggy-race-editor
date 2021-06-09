@@ -3,7 +3,7 @@
 {% block content %}
 
   <h1>Buggy</h1>
-
+  {% for buggy in buggies %}
   <table>
     <tr>
       <td>ID:</td> <td> {{ buggy['id'] }} </td>
@@ -69,6 +69,7 @@
       <td>Algorithm type:</td> <td> {{ buggy['algo'] }} </td>
     </tr>
   </table>
+  {% endfor %}
 
   <p>
     <a href="/" class="button">home</a>

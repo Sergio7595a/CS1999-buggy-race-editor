@@ -1,3 +1,5 @@
+from typing import List
+
 from flask import Flask, render_template, request, jsonify
 import sqlite3 as sql
 
@@ -8,8 +10,8 @@ app = Flask(__name__)
 DATABASE_FILE = "database.db"
 DEFAULT_BUGGY_ID = "1"
 BUGGY_RACE_SERVER_URL = "https://rhul.buggyrace.net"
-
-
+current_path = [1]
+current_id = [0]
 # ------------------------------------------------------------
 # validation
 # ------------------------------------------------------------
@@ -17,7 +19,7 @@ def get_items():
     con = sql.connect(DATABASE_FILE)
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("SELECT * FROM buggies WHERE id=? LIMIT 1", (DEFAULT_BUGGY_ID))
+    cur.execute("SELECT * FROM buggies WHERE id=? LIMIT 1", (current_id))
 
     return dict(zip([column[0] for column in cur.description], cur.fetchone())).items()
 
@@ -29,11 +31,11 @@ def forum_check(data, type):
     return data, 0
 
 
-def gather_costs():
+def gather_costs(): # gather the costs here using parsing.
     print("fun")
 
 
-def calculate_cost():
+def calculate_cost(): # compare the costs to the exiting buggy and calc a cost.
     to_check = get_items()
     # costs = gather_costs()
     # print(to_check)
@@ -42,7 +44,8 @@ def calculate_cost():
     return 20
 
 
-def database_assign(item, type):
+
+def database_assign(item, type): # update an existing database
     data, error = forum_check(request.form[item], type)
     if error == 1:
         msg = item + " " + data
@@ -54,7 +57,7 @@ def database_assign(item, type):
                 cost = calculate_cost()
                 cur.execute(
                     f"UPDATE buggies set {item}=?, total_cost=? WHERE id=?",
-                    (data, cost, DEFAULT_BUGGY_ID)
+                    (data, cost, current_id[0])
                 )
                 con.commit()
                 # msg = "Record successfully saved"
@@ -66,14 +69,40 @@ def database_assign(item, type):
             con.close()
             return msg
 
+def database_new(item,type,path):
+    data, error = forum_check(path, type)
+    if error == 1:
+        msg = item + " " + data
+        return msg
+    else:
+        try:
+            with sql.connect(DATABASE_FILE) as con:
+                cur = con.cursor()
+                #cost = calculate_cost()
+                cur.execute(
+                    f"INSERT INTO buggies ({item}) VALUES (?)",
+                    (data))
+                con.commit()
+                # msg = "Record successfully saved"
+                msg = f"value of {item} is now {data}"
+        except:
+            con.rollback()
+            msg = "error in new data for " + item
+        finally:
+            con.close()
+            return msg
 
-def get_table():
+def get_table(type=0):
     con = sql.connect(DATABASE_FILE)
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("SELECT * FROM buggies")
-    record = cur.fetchone();
-    return record
+    if type == 1:
+        cur.execute("SELECT * FROM buggies")
+        records = cur.fetchall();
+    else:
+        cur.execute("SELECT * FROM buggies WHERE id=?", (current_id))
+        records = cur.fetchone();
+    return records
 
 
 # ------------------------------------------------------------
@@ -98,48 +127,67 @@ def home():
 # ------------------------------------------------------------
 @app.route('/buggy')
 def show_buggies():
-    return render_template("buggy.html", buggy=get_table())
-
+    return render_template("buggy.html", buggies=get_table(1))
 
 # ------------------------------------------------------------
 # a placeholder page for editing the buggy: you'll need
 # to change this when you tackle task 2-EDIT
 # ------------------------------------------------------------
-def edit_buggy(module):
-    return render_template(module, buggy=get_table())
-
 @app.route('/user_id', methods=['POST', 'GET'])
 def identity_edit():
     if request.method == 'GET':
-        return edit_buggy("verify.html")
+        return render_template("verify.html", buggy=get_table())
     elif request.method == 'POST':
-        #id = database_assign()
-        return render_template("question.html")
+        id = request.form["id"]
+        return render_template("question.html", id=id, buggies=get_table(1))
 
-@app.route('/edit')
+@app.route('/edit', methods=['POST', 'GET'])
 def edit_option():
-    return edit_buggy("buggy-form.html")
+    if request.method == 'GET':
+        return render_template("buggy-form.html", buggy=get_table(), id=current_id[0])
+    elif request.method == 'POST':
+        id = request.form['id']
+        print(id)
+        current_path.pop(0)
+        current_path.append(1)
+        current_id.pop(0)
+        current_id.append(id)
+        return render_template("buggy-form.html", buggy=get_table(), id=current_id[0])
 
 
-@app.route('/create')
+
+@app.route('/create', methods=['POST', 'GET'])
 def create_option():
-    return edit_buggy("buggy-form.html")
+    if request.method == 'GET':
+        current_path.pop(0)
+        current_path.append(0)
+        print(decider("4", 'qty_wheels', 1))
+        return render_template("updated.html", msg="new buggy has been created feel free to edit it")
+    elif request.method == 'POST':
+        return render_template("buggy-form.html", buggy=get_table(), id=current_id[0])
+
+def decider(path,item,type):
+    if path == 1:
+        return database_assign(item,type)
+    else:
+        return database_new(item,type,path)
 
 @app.route('/warfare', methods=['POST', 'GET'])
 def warfare_edit():
     if request.method == 'GET':
-        return edit_buggy("buggy-form-warfare.html")
+        return render_template("buggy-form-warfare.html", buggy=get_table())
     elif request.method == 'POST':
         msg = ""
         # warfare
-        armour = database_assign('armour', 0)
-        attack = database_assign('attack', 0)
-        qty_attacks = database_assign('qty_attacks', 1)
-        fireproof = database_assign('fireproof', 0)
-        insulated = database_assign('insulated', 0)
-        antibiotic = database_assign('antibiotic', 0)
-        banging = database_assign('banging', 0)
-        algo = database_assign('algo', 0)
+        path = current_path[0]
+        armour = decider(path,'armour', 0)
+        attack = decider(path,'attack', 0)
+        qty_attacks = decider(path,'qty_attacks', 1)
+        fireproof = decider(path,'fireproof', 0)
+        insulated = decider(path,'insulated', 0)
+        antibiotic = decider(path,'antibiotic', 0)
+        banging = decider(path,'banging', 0)
+        algo = decider(path,'algo', 0)
 
         return render_template("updated.html", msg=armour, msg2=attack, msg3=qty_attacks, msg4=fireproof,
                                msg5=insulated, msg6=antibiotic, msg7=banging, msg8=algo)
@@ -148,13 +196,14 @@ def warfare_edit():
 @app.route('/wheel', methods=['POST', 'GET'])
 def wheel_edit():
     if request.method == 'GET':
-        return edit_buggy("buggy-form-wheel.html")
+        return render_template("buggy-form-wheel.html", buggy=get_table())
     elif request.method == 'POST':
         msg = ""
         # wheels
-        qty_wheels = database_assign('qty_wheels', 1)
-        tyres = database_assign('tyres', 0)
-        qty_tyres = database_assign('qty_tyres', 1)
+        path = current_path[0]
+        qty_wheels = decider(path, 'qty_wheels', 1)
+        tyres = decider(path, 'tyres', 0)
+        qty_tyres = decider(path, 'qty_tyres', 1)
 
         return render_template("updated.html", msg=qty_wheels, msg2=tyres, msg3=qty_tyres)
 
@@ -162,15 +211,16 @@ def wheel_edit():
 @app.route('/power', methods=['POST', 'GET'])
 def power_edit():
     if request.method == 'GET':
-        return edit_buggy("buggy-form-power.html")
+        return render_template("buggy-form-power.html", buggy=get_table())
     elif request.method == 'POST':
         msg = ""
         # power
-        power_type = database_assign('power_type', 0)
-        power_units = database_assign('power_units', 1)
-        aux_power_type = database_assign('aux_power_type', 0)
-        aux_power_units = database_assign('aux_power_units', 1)
-        hamster_booster = database_assign('hamster_booster', 1)
+        path = current_path[0]
+        power_type = decider(path, 'power_type', 0)
+        power_units = decider(path, 'power_units', 1)
+        aux_power_type = decider(path, 'aux_power_type', 0)
+        aux_power_units = decider(path, 'aux_power_units', 1)
+        hamster_booster = decider(path, 'hamster_booster', 1)
 
         return render_template("updated.html", msg=power_type, msg2=power_units, msg3=aux_power_type,
                                msg4=aux_power_units, msg5=hamster_booster)
@@ -179,13 +229,14 @@ def power_edit():
 @app.route('/flag', methods=['POST', 'GET'])
 def flag_edit():
     if request.method == 'GET':
-        return edit_buggy("buggy-form-flag.html")
+        return render_template("buggy-form-flag.html", buggy=get_table())
     elif request.method == 'POST':
         msg = ""
         # flag
-        flag_color = database_assign('flag_color', 0)
-        flag_pattern = database_assign('flag_pattern', 0)
-        flag_color_secondary = database_assign('flag_color_secondary', 0)
+        path = current_path[0]
+        flag_color = decider(path, 'flag_color', 0)
+        flag_pattern = decider(path, 'flag_pattern', 0)
+        flag_color_secondary = decider(path, 'flag_color_secondary', 0)
 
         return render_template("updated.html", msg=flag_color, msg2=flag_pattern, msg3=flag_color_secondary)
 
