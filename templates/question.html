@@ -6,11 +6,11 @@
 
   <form action="/edit" method="post">
     <label for="id"value={{id}}>which buggy to edit: </label>
-    <select name="id" id="identity">
-      {%for buggy in buggies%}
-      <option value="{{ buggy['id'] }}">{{ buggy['id'] }}</option>
-      {% endfor %}
-    </select>
+      <select name="id" id="identity">
+        {%for buggy in buggies%}
+        <option value="{{ buggy['id'] }}">{{ buggy['id'] }}</option>
+        {% endfor %}
+      </select>
 
     <input type="submit" class="button">
   </form>
@@ -24,6 +24,7 @@
           <option value="{{ buggy['id'] }}">{{ buggy['id'] }}</option>
         {% endfor %}
       </select>
+    <input type="submit" class="button">
   </form>>
   <p>
     <a href="/" class="button">home</a>

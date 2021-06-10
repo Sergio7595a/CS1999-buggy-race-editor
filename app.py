@@ -10,6 +10,8 @@ DEFAULT_BUGGY_ID = "1"
 BUGGY_RACE_SERVER_URL = "https://rhul.buggyrace.net"
 current_path = [1]
 current_id = [0]
+
+
 # ------------------------------------------------------------
 # validation
 # ------------------------------------------------------------
@@ -22,18 +24,18 @@ def get_items():
     return dict(zip([column[0] for column in cur.description], cur.fetchone())).items()
 
 
-def forum_check(data, type):
+def forum_check(data, type): # verification of any type gamerule as well.
     if type == 1:
         if not data.isdigit():
             return "needs a digit not a word/letters, ", 1
     return data, 0
 
 
-def gather_costs(): # gather the costs here using parsing.
+def gather_costs():  # gather the costs here using parsing.
     print("fun")
 
 
-def calculate_cost(): # compare the costs to the exiting buggy and calc a cost.
+def calculate_cost():  # compare the costs to the exiting buggy and calc a cost.
     to_check = get_items()
     # costs = gather_costs()
     # print(to_check)
@@ -42,8 +44,7 @@ def calculate_cost(): # compare the costs to the exiting buggy and calc a cost.
     return 20
 
 
-
-def database_assign(item, type): # update an existing database
+def database_assign(item, type):  # update an existing database
     data, error = forum_check(request.form[item], type)
     if error == 1:
         msg = item + " " + data
@@ -67,7 +68,8 @@ def database_assign(item, type): # update an existing database
             con.close()
             return msg
 
-def database_new(item,type,path):
+
+def database_new(item, type, path):
     data, error = forum_check(path, type)
     if error == 1:
         msg = item + " " + data
@@ -76,7 +78,7 @@ def database_new(item,type,path):
         try:
             with sql.connect(DATABASE_FILE) as con:
                 cur = con.cursor()
-                #cost = calculate_cost()
+                # cost = calculate_cost()
                 cur.execute(
                     f"INSERT INTO buggies ({item}) VALUES (?)",
                     (data))
@@ -89,27 +91,25 @@ def database_new(item,type,path):
         finally:
             con.close()
             return msg
+
+
 def database_remove(id):
-    data, error = forum_check(id, 1)
-    if error == 1:
-        msg = id + " " + data
+    try:
+        with sql.connect(DATABASE_FILE) as con:
+            cur = con.cursor()
+            cur.execute("DELETE FROM buggies WHERE id=?",
+                        id)
+            con.commit()
+            # msg = "Record successfully saved"
+            print('hi')
+            msg = f"buggy {id} is deleted"
+    except:
+        con.rollback()
+        msg = "error in new data for " + id
+    finally:
+        con.close()
         return msg
-    else:
-        try:
-            with sql.connect(DATABASE_FILE) as con:
-                cur = con.cursor()
-                cur.execute(
-                    f"DELETE buggies ({id}) WHERE id=?",
-                    (data))
-                con.commit()
-                # msg = "Record successfully saved"
-                msg = f"buggy {data} is deleted"
-        except:
-            con.rollback()
-            msg = "error in new data for " + data
-        finally:
-            con.close()
-            return msg
+
 
 def get_table(type=0):
     con = sql.connect(DATABASE_FILE)
@@ -131,9 +131,12 @@ def get_table(type=0):
 def home():
     return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
 
+
 @app.route('/poster')
 def poster():
-   return render_template('poster.html')
+    return render_template('poster.html')
+
+
 # ------------------------------------------------------------
 # creating a new buggy:
 #  if it's a POST request process the submitted data
@@ -150,6 +153,7 @@ def poster():
 def show_buggies():
     return render_template("buggy.html", buggies=get_table(1))
 
+
 # ------------------------------------------------------------
 # a placeholder page for editing the buggy: you'll need
 # to change this when you tackle task 2-EDIT
@@ -161,6 +165,7 @@ def identity_edit():
     elif request.method == 'POST':
         id = request.form["id"]
         return render_template("question.html", id=id, buggies=get_table(1))
+
 
 @app.route('/edit', methods=['POST', 'GET'])
 def edit_option():
@@ -176,7 +181,6 @@ def edit_option():
         return render_template("buggy-form.html", buggy=get_table(), id=current_id[0])
 
 
-
 @app.route('/create', methods=['POST', 'GET'])
 def create_option():
     if request.method == 'GET':
@@ -187,6 +191,7 @@ def create_option():
     elif request.method == 'POST':
         return render_template("buggy-form.html", buggy=get_table(), id=current_id[0])
 
+
 @app.route('/delete', methods=['POST', 'GET'])
 def delete_option():
     if request.method == 'GET':
@@ -196,11 +201,13 @@ def delete_option():
         msg = database_remove(id)
         return render_template("updated.html", msg=msg)
 
-def decider(path,item,type):
+
+def decider(path, item, type):
     if path == 1:
-        return database_assign(item,type)
+        return database_assign(item, type)
     else:
-        return database_new(item,type,path)
+        return database_new(item, type, path)
+
 
 @app.route('/warfare', methods=['POST', 'GET'])
 def warfare_edit():
@@ -210,14 +217,14 @@ def warfare_edit():
         msg = ""
         # warfare
         path = current_path[0]
-        armour = decider(path,'armour', 0)
-        attack = decider(path,'attack', 0)
-        qty_attacks = decider(path,'qty_attacks', 1)
-        fireproof = decider(path,'fireproof', 0)
-        insulated = decider(path,'insulated', 0)
-        antibiotic = decider(path,'antibiotic', 0)
-        banging = decider(path,'banging', 0)
-        algo = decider(path,'algo', 0)
+        armour = decider(path, 'armour', 0)
+        attack = decider(path, 'attack', 0)
+        qty_attacks = decider(path, 'qty_attacks', 1)
+        fireproof = decider(path, 'fireproof', 0)
+        insulated = decider(path, 'insulated', 0)
+        antibiotic = decider(path, 'antibiotic', 0)
+        banging = decider(path, 'banging', 0)
+        algo = decider(path, 'algo', 0)
 
         return render_template("updated.html", msg=armour, msg2=attack, msg3=qty_attacks, msg4=fireproof,
                                msg5=insulated, msg6=antibiotic, msg7=banging, msg8=algo)
